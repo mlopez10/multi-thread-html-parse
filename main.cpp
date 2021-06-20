@@ -5,6 +5,7 @@
 #include <chrono>
 #include <unordered_map>
 #include <mutex>
+#include <algorithm>
 #include <cpr/cpr.h>
 #include <tidybuffio.h>
 #include <pugixml.hpp>
@@ -166,7 +167,7 @@ int main(int argc, char* argv[])
     size_t remain = urls.size() % numThreads;
     size_t start(0);
     size_t end(0);
-    for(size_t i = 0; i < std::min(numThreads, urls.size()); ++i){
+    for(size_t i = 0; i < std::min<size_t>(numThreads, urls.size()); ++i){
         end += (remain > 0) ? (length + !!(remain--)) : length;
         threads.emplace_back(std::thread(fooRunner, std::ref(smap), std::next(urls.begin(), start), std::next(urls.begin(), end) ));
         start = end;
