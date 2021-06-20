@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.0)
-project(nTopology VERSION 0.1.0)
+project(multithread_Html_Parse VERSION 0.1.0)
 
 
 include(FetchContent)
@@ -43,7 +43,7 @@ if(NOT ${lcName}_POPULATED)
 endif()
 
 
-add_executable(nTopology nTopology.cpp)
+add_executable(multithread_Html_Parse main.cpp)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr PRIVATE tidy-share PRIVATE pugixml::pugixml)
 target_include_directories(${PROJECT_NAME} PRIVATE ${${lcName}_SOURCE_DIR}/include)
