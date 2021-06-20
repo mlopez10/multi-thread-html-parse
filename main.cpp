@@ -91,6 +91,7 @@ void foo(const std::string & URL, threadSafe_uMap &smap){
     while((r.status_code < 200 || r.status_code > 299) && retryCount < 3){
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         r = cpr::Get(cpr::Url{URL});
+        ++retryCount;
     };    
     TidyDoc tidyDoc = tidyCreate();
     tidyOptSetBool(tidyDoc, TidyXhtmlOut, yes)
@@ -134,7 +135,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> urls;
     size_t numThreads;
     if(argc < 2){
-        std::vector<std::string> urls = {"http://example.com/"};
+        urls = {"https://example.com/"};
         numThreads = 1;
     }
     else{
@@ -181,6 +182,6 @@ int main(int argc, char* argv[])
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     duration<double, std::milli> ms_double = t2 - t1;
 
-    std::cout << ms_double.count() << "ms";
+    std::cout << ms_double.count() << "ms\n";
     return 0;
 }
