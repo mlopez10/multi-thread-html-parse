@@ -16,7 +16,7 @@ Should build on both Linux and Windows
 
 ### Building:
 -cmake -S . -B build
--cmake --build build
+-cmake --build build --config Release
 
 ### Running:
 run from the command line, first argument is a path to a text file with a list of URLs (one per line), second argument is the number of threads to use.

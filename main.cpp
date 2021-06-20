@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <cpr/cpr.h>
 #include <tidybuffio.h>
-#include <pugixml.hpp>
 
 
 class threadSafe_uMap {
@@ -42,20 +41,6 @@ public:
 
 };
 
-std::string tokenize(std::string const &str, const char startDelim = '<', const char endDelim = '>')
-{
-    size_t start;
-    size_t end = 0;
-    std::string retVal;
-
-    while ((start = str.find_first_of(startDelim, end)) != std::string::npos)
-    {
-        end = str.find(endDelim, start);
-        retVal.append(str.substr(start, end + 1 - start));
-    }
-    return retVal;
-}
-
 void tidyFindChildren(const TidyNode &node, int &nodeNum, int &leafNode, int &divNode){
     
     nodeNum++;
@@ -74,18 +59,6 @@ void tidyFindChildren(const TidyNode &node, int &nodeNum, int &leafNode, int &di
     return;
 }
 
-void findChildren(const pugi::xml_node &node, int &nodeNum, int &leafNode){
-    ++nodeNum;
-    auto children = node.children();
-    if(children.begin() == children.end()){
-        leafNode++;
-    }else{
-        for(const auto & child: children){
-            findChildren(child, nodeNum, leafNode);
-        }
-    }
-    return;
-}
 void foo(const std::string & URL, threadSafe_uMap &smap){
     cpr::Response r = cpr::Get(cpr::Url{URL});
     int retryCount(0);
@@ -109,15 +82,6 @@ void foo(const std::string & URL, threadSafe_uMap &smap){
     int leafNum(0);
     int divNum(0);
     tidyFindChildren(html, nodeNum, leafNum, divNum);
-    TidyBuffer tidyOutputBuffer = {0};
-    pugi::xml_document xmlDoc;
-    tidySaveBuffer(tidyDoc, &tidyOutputBuffer);
-    if(tidyOutputBuffer.bp) {
-      std::string tidyResult;
-      tidyResult = (char*)tidyOutputBuffer.bp;
-      tidyBufFree(&tidyOutputBuffer);
-      pugi::xml_parse_result result = xmlDoc.load_buffer(tidyResult.c_str(), tidyResult.size());
-    }
     tidyRelease(tidyDoc);
 
     std::stringstream msg;
@@ -154,12 +118,7 @@ int main(int argc, char* argv[])
         }
 
     }
-    using std::chrono::high_resolution_clock;
-    using std::chrono::duration_cast;
-    using std::chrono::duration;
-    using std::chrono::milliseconds;
 
-    auto t1 = high_resolution_clock::now();
     threadSafe_uMap smap;
     std::vector<std::thread> threads;
     threads.reserve(numThreads);    
@@ -178,11 +137,5 @@ int main(int argc, char* argv[])
     for(const auto & url: urls){
         std::cout << smap[url];
     }
-
-    auto t2 = high_resolution_clock::now();
-    auto ms_int = duration_cast<milliseconds>(t2 - t1);
-    duration<double, std::milli> ms_double = t2 - t1;
-
-    std::cout << ms_double.count() << "ms\n";
     return 0;
 }

@@ -18,17 +18,6 @@ if(NOT ${lcName}_POPULATED)
     add_subdirectory(${${lcName}_SOURCE_DIR} ${${lcName}_BINARY_DIR})
 endif()
 
-FetchContent_Declare(pugixml 
-                     GIT_REPOSITORY https://github.com/zeux/pugixml.git
-                     GIT_TAG v1.11.4 
-                     ) 
-FetchContent_GetProperties(pugixml)
-string(TOLOWER "pugixml" lcName)
-if(NOT ${lcName}_POPULATED)
-    FetchContent_populate(pugixml)
-    add_subdirectory(${${lcName}_SOURCE_DIR} ${${lcName}_BINARY_DIR})
-endif()
-
 FetchContent_Declare(tidy 
                      GIT_REPOSITORY https://github.com/htacg/tidy-html5.git
                      GIT_TAG 5.7.28
@@ -44,7 +33,7 @@ endif()
 
 add_executable(multithread_Html_Parse main.cpp)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr PRIVATE tidy-share PRIVATE pugixml::pugixml)
+target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr PRIVATE tidy-share)
 target_include_directories(${PROJECT_NAME} PRIVATE ${${lcName}_SOURCE_DIR}/include)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_SOURCE_DIR}/bin)
