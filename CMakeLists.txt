@@ -16,6 +16,7 @@ if(NOT ${lcName}_POPULATED)
     FetchContent_populate(cpr)
     set(CPR_BUILD_TESTS off)
     set(CPR_BUILD_TESTS_SSL off)
+    set(CPR_ENABLE_SSL off)
     add_subdirectory(${${lcName}_SOURCE_DIR} ${${lcName}_BINARY_DIR})
 endif()
 
